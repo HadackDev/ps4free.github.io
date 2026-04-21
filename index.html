@@ -1,0 +1,44 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PSFree GoldHen</title>
+<style>
+body{background:#0a0e17;font-family:sans-serif;padding:20px;text-align:center}
+.container{max-width:700px;margin:0 auto;background:#121724;border-radius:24px;padding:24px}
+h1{color:#fff;font-size:1.8rem}
+.lang-btn{background:#2d3a5e;color:white;border:none;padding:8px 16px;margin:5px;border-radius:20px;cursor:pointer}
+.fw-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0}
+.fw-btn{background:#0f1420;border:1px solid #d4a017;color:#fff;padding:10px 16px;border-radius:30px;cursor:pointer}
+.status{background:#0d1119;padding:12px;border-radius:12px;margin:15px 0;color:#d4a017}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>PS<span style="color:#d4a017">Free</span> <span style="background:#d4a017;color:#000;padding:2px 8px;border-radius:20px;font-size:12px">GOLDHEN</span></h1>
+    <div>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+    </div>
+    <div class="status" id="status">✅ Ready. Select firmware</div>
+    <div class="fw-grid" id="fwGrid"></div>
+    <div style="color:#4a5572;font-size:11px;margin-top:20px">GoldHen PS4 Jailbreak</div>
+</div>
+<script>
+const firmwares = ["7.00","7.01","7.02","7.50","7.51","7.55","8.00","8.01","8.03","8.50","8.52","9.00","9.03","9.04","9.50","9.51","9.60"];
+const texts = {en:{ready:"✅ Ready. Select firmware",loading:"🚀 Loading GoldHen for FW ",success:"✅ GoldHen injected!"},ru:{ready:"✅ Готово. Выберите прошивку",loading:"🚀 Загрузка GoldHen для FW ",success:"✅ GoldHen внедрён!"}};
+let lang = 'en';
+function setLang(l){lang=l;document.getElementById('status').innerHTML=texts[lang].ready;}
+function trigger(fw){
+    document.getElementById('status').innerHTML=texts[lang].loading+fw+'...';
+    let iframe=document.getElementById('gh_iframe');
+    if(!iframe){iframe=document.createElement('iframe');iframe.id='gh_iframe';iframe.style.display='none';document.body.appendChild(iframe);}
+    iframe.src=`https://raw.githubusercontent.com/GoldHEN/GoldHEN/main/payloads/payload_${fw.replace('.','')}.js`;
+    iframe.onload=()=>{document.getElementById('status').innerHTML=texts[lang].success+' '+fw;setTimeout(()=>{document.getElementById('status').innerHTML=texts[lang].ready;},4000);};
+}
+const grid=document.getElementById('fwGrid');
+firmwares.forEach(f=>{let btn=document.createElement('button');btn.className='fw-btn';btn.innerText=f;btn.onclick=()=>trigger(f);grid.appendChild(btn);});
+setLang('en');
+</script>
+</body>
+</html>
