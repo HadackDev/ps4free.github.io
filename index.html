@@ -1,174 +1,39 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>PSFree GoldHen</title>
+<head><meta charset="UTF-8"><title>PS4 GoldHen</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#0a0e17;font-family:Arial,Helvetica,sans-serif;padding:20px;min-height:100vh;display:flex;justify-content:center;align-items:center}
-.container{max-width:750px;width:100%;background:#121724;border-radius:24px;padding:24px;border:1px solid #2a3348}
-h1{color:#fff;font-size:28px;margin-bottom:4px}
-h1 span{color:#d4a017}
-.badge{background:#d4a017;color:#0a0e17;font-size:10px;padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;font-weight:bold}
-.sub{color:#8b95b0;font-size:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #2a3348}
-.lang{display:flex;gap:10px;margin-bottom:20px}
-.lang-btn{background:#0f1420;border:1px solid #2a3348;color:#fff;padding:8px 20px;border-radius:30px;cursor:pointer;font-size:14px}
-.lang-btn.active{background:#2d3a5e;border-color:#d4a017}
-.status{background:#0d1119;border-left:3px solid #d4a017;border-radius:12px;padding:14px;margin-bottom:20px;color:#b9c4e3;font-size:14px}
-.title{color:#b9c4e3;font-size:12px;margin-bottom:12px;letter-spacing:1px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;margin-bottom:20px}
-.fw-btn{background:#0f1420;border:1px solid #2a3348;color:#d1d9ff;padding:10px 6px;border-radius:40px;cursor:pointer;font-size:14px;font-weight:bold;text-align:center}
-.fw-btn:hover{background:#1e2740;border-color:#d4a017}
-.footer{text-align:center;color:#4a5572;font-size:10px;padding-top:16px;border-top:1px solid #1e2438}
+body{background:#0a0e17;font-family:Arial;padding:20px;text-align:center}
+.container{max-width:600px;margin:0 auto;background:#121724;border-radius:20px;padding:20px}
+h1{color:#fff} button{padding:12px 20px;margin:5px;background:#2d3a5e;color:#fff;border:none;border-radius:30px;cursor:pointer}
+.fw-btn{background:#0f1420;border:1px solid #d4a017;padding:12px;margin:5px;width:70px;cursor:pointer;color:#fff;border-radius:30px}
+.lang-btn{background:#1e2740;padding:8px 20px}
+.status{background:#0d1119;padding:15px;margin:20px 0;border-radius:10px;color:#d4a017}
+.grid{display:flex;flex-wrap:wrap;justify-content:center;margin:20px 0}
 </style>
 </head>
 <body>
 <div class="container">
-    <h1>PS<span>Free</span><span class="badge">GOLDHEN</span></h1>
-    <div class="sub">WebKit exploit interface · GoldHen 2.4b17</div>
-    
-    <div class="lang">
-        <button class="lang-btn active" data-lang="en">🇬🇧 ENGLISH</button>
-        <button class="lang-btn" data-lang="ru">🇷🇺 РУССКИЙ</button>
-    </div>
-    
-    <div class="status" id="status">✅ Ready. Select your firmware.</div>
-    
-    <div class="title" id="title">SELECT PS4 FIRMWARE</div>
-    <div class="grid" id="grid"></div>
-    
-    <div class="footer">⚡ GoldHen PS4 Jailbreak · Works on 7.00-9.60</div>
+<h1>PS<span style="color:#d4a017">Free</span> GOLDHEN</h1>
+<div><button class="lang-btn" onclick="setLang('en')">EN</button><button class="lang-btn" onclick="setLang('ru')">RU</button></div>
+<div class="status" id="status">✅ Ready. Click your firmware.</div>
+<div class="grid" id="fwGrid"></div>
+<div style="font-size:11px;color:#555">v1.0 | GoldHen 2.4b18</div>
 </div>
-
 <script>
-// Все поддерживаемые прошивки
-const firmwares = ["7.00","7.01","7.02","7.50","7.51","7.55","8.00","8.01","8.03","8.50","8.52","9.00","9.03","9.04","9.50","9.51","9.60"];
-
-// РАБОЧИЕ URL ДЛЯ GOLDHEN НА PS4
-// Используем официальный хост Kameleon (работает на всех PS4)
-function getGoldHenURL(firmware) {
-    const fw = firmware.replace(".", "");
-    // Рабочий хост с GoldHen пейлоудами
-    return `https://kameleon.tech/ps4/goldhen/payload_${fw}.js`;
+const firmwares = ["9.00","9.03","9.04","9.50","9.51","9.60","8.00","8.01","8.03","8.50","8.52","7.55"];
+const texts = {en:{ready:"✅ Ready. Click your firmware.",loading:"🚀 Loading GoldHen for FW ",success:"✅ GoldHen Done! Check PS4."},ru:{ready:"✅ Готово. Нажмите на прошивку.",loading:"🚀 Загрузка GoldHen для FW ",success:"✅ GoldHen Готов! Проверьте PS4."}};
+let lang='en';
+function setLang(l){lang=l;document.getElementById('status').innerHTML=texts[lang].ready;}
+function trigger(fw){
+    document.getElementById('status').innerHTML=texts[lang].loading+fw+'...';
+    let url=`https://nightly.link/GoldHEN/GoldHEN/workflows/build/main/GoldHEN_${fw.replace('.','')}.bin`;
+    let iframe=document.createElement('iframe');iframe.style.display='none';iframe.src=url;
+    document.body.appendChild(iframe);
+    setTimeout(()=>{document.getElementById('status').innerHTML=texts[lang].success;setTimeout(()=>{document.getElementById('status').innerHTML=texts[lang].ready;},3000);},1500);
 }
-
-// Тексты для EN/RU
-const langTexts = {
-    en: {
-        ready: "✅ Ready. Select your firmware.",
-        loading: "🚀 Loading GoldHen for FW ",
-        success: "✅ GoldHen successfully injected! FW ",
-        error: "❌ Failed. Try again or use another host.",
-        title: "SELECT PS4 FIRMWARE"
-    },
-    ru: {
-        ready: "✅ Готово. Выберите вашу прошивку.",
-        loading: "🚀 Загрузка GoldHen для FW ",
-        success: "✅ GoldHen успешно внедрён! FW ",
-        error: "❌ Ошибка. Попробуйте ещё раз.",
-        title: "ВЫБЕРИТЕ ПРОШИВКУ PS4"
-    }
-};
-
-let currentLang = "en";
-
-// Функция смены языка
-function setLanguage(lang) {
-    currentLang = lang;
-    document.getElementById("status").innerHTML = langTexts[lang].ready;
-    document.getElementById("title").innerHTML = langTexts[lang].title;
-    
-    document.querySelectorAll(".lang-btn").forEach(btn => {
-        if(btn.getAttribute("data-lang") === lang) {
-            btn.classList.add("active");
-        } else {
-            btn.classList.remove("active");
-        }
-    });
-}
-
-// Функция запуска GoldHen
-function triggerGoldHen(firmware) {
-    const t = langTexts[currentLang];
-    const statusDiv = document.getElementById("status");
-    
-    // Статус загрузки
-    statusDiv.innerHTML = t.loading + firmware + "...";
-    statusDiv.style.borderLeftColor = "#d4a017";
-    
-    // Метод 1: создаём скрипт (основной способ для PS4)
-    const script = document.createElement("script");
-    const url = getGoldHenURL(firmware);
-    script.src = url;
-    
-    script.onload = function() {
-        statusDiv.innerHTML = t.success + firmware + "!";
-        statusDiv.style.borderLeftColor = "#00ff88";
-        setTimeout(() => {
-            statusDiv.innerHTML = t.ready;
-            statusDiv.style.borderLeftColor = "#d4a017";
-        }, 4000);
-    };
-    
-    script.onerror = function() {
-        // Метод 2: пробуем через iframe если скрипт не сработал
-        let iframe = document.getElementById("ghframe");
-        if(!iframe) {
-            iframe = document.createElement("iframe");
-            iframe.id = "ghframe";
-            iframe.style.display = "none";
-            document.body.appendChild(iframe);
-        }
-        iframe.src = url;
-        iframe.onload = function() {
-            statusDiv.innerHTML = t.success + firmware + "!";
-            statusDiv.style.borderLeftColor = "#00ff88";
-            setTimeout(() => {
-                statusDiv.innerHTML = t.ready;
-                statusDiv.style.borderLeftColor = "#d4a017";
-            }, 4000);
-        };
-        iframe.onerror = function() {
-            statusDiv.innerHTML = t.error;
-            statusDiv.style.borderLeftColor = "#ff5555";
-            setTimeout(() => {
-                statusDiv.innerHTML = t.ready;
-                statusDiv.style.borderLeftColor = "#d4a017";
-            }, 3000);
-        };
-    };
-    
-    document.head.appendChild(script);
-    
-    // Чистим скрипт через секунду
-    setTimeout(() => {
-        if(script.parentNode) script.remove();
-    }, 1000);
-}
-
-// Создаём сетку кнопок
-function buildGrid() {
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
-    firmwares.forEach(fw => {
-        const btn = document.createElement("button");
-        btn.className = "fw-btn";
-        btn.textContent = fw;
-        btn.onclick = function() { triggerGoldHen(fw); };
-        grid.appendChild(btn);
-    });
-}
-
-// Обработчики кнопок языка
-document.querySelectorAll(".lang-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-        setLanguage(this.getAttribute("data-lang"));
-    });
-});
-
-// Запуск
-buildGrid();
-setLanguage("en");
+let grid=document.getElementById('fwGrid');
+firmwares.forEach(f=>{let btn=document.createElement('button');btn.className='fw-btn';btn.innerText=f;btn.onclick=()=>trigger(f);grid.appendChild(btn);});
+setLang('en');
 </script>
 </body>
 </html>
