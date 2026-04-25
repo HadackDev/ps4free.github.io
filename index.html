@@ -166,8 +166,8 @@
 <div class="container">
     <div class="header">
         <div class="logo">
-            <h1>PS4<span>Free</span><span class="goldhen-badge">GOLDHEN</span></h1>
-            <p id="subtitle">WebKit exploit interface</p>
+            <h1>PS4<span>Free</span><span class="goldhen-badge">by HadackDev</span></h1>
+            <p id="subtitle">WebKit exploit</p>
         </div>
         <div class="lang-switch">
             <button class="lang-btn active" data-lang="en">EN</button>
@@ -203,7 +203,7 @@
     const translations = {
         en: {
             subtitle: "WebKit exploit interface",
-            version: "Version: 1.0",
+            version: "Version: 1.5.1 | GoldHen Loader",
             statusReady: "✅ Ready. Select your firmware.",
             statusRedirect: (fw) => `🚀 Loading GoldHen for FW ${fw}... Redirecting to exploit host.`,
             sectionTitle: "SELECT PS4 FIRMWARE",
@@ -319,92 +319,6 @@
     // Инициализация страницы
     buildFirmwareGrid();
     setLanguage("en");   // стартовый язык — английский
-</script>
-</body>
-</html>
-
-// Функция запуска GoldHen
-function triggerGoldHen(firmware) {
-    const t = langTexts[currentLang];
-    const statusDiv = document.getElementById("status");
-    
-    // Статус загрузки
-    statusDiv.innerHTML = t.loading + firmware + "...";
-    statusDiv.style.borderLeftColor = "#d4a017";
-    
-    // Метод 1: создаём скрипт (основной способ для PS4)
-    const script = document.createElement("script");
-    const url = getGoldHenURL(firmware);
-    script.src = url;
-    
-    script.onload = function() {
-        statusDiv.innerHTML = t.success + firmware + "!";
-        statusDiv.style.borderLeftColor = "#00ff88";
-        setTimeout(() => {
-            statusDiv.innerHTML = t.ready;
-            statusDiv.style.borderLeftColor = "#d4a017";
-        }, 4000);
-    };
-    
-    script.onerror = function() {
-        // Метод 2: пробуем через iframe если скрипт не сработал
-        let iframe = document.getElementById("ghframe");
-        if(!iframe) {
-            iframe = document.createElement("iframe");
-            iframe.id = "ghframe";
-            iframe.style.display = "none";
-            document.body.appendChild(iframe);
-        }
-        iframe.src = url;
-        iframe.onload = function() {
-            statusDiv.innerHTML = t.success + firmware + "!";
-            statusDiv.style.borderLeftColor = "#00ff88";
-            setTimeout(() => {
-                statusDiv.innerHTML = t.ready;
-                statusDiv.style.borderLeftColor = "#d4a017";
-            }, 4000);
-        };
-        iframe.onerror = function() {
-            statusDiv.innerHTML = t.error;
-            statusDiv.style.borderLeftColor = "#ff5555";
-            setTimeout(() => {
-                statusDiv.innerHTML = t.ready;
-                statusDiv.style.borderLeftColor = "#d4a017";
-            }, 3000);
-        };
-    };
-    
-    document.head.appendChild(script);
-    
-    // Чистим скрипт через секунду
-    setTimeout(() => {
-        if(script.parentNode) script.remove();
-    }, 1000);
-}
-
-// Создаём сетку кнопок
-function buildGrid() {
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
-    firmwares.forEach(fw => {
-        const btn = document.createElement("button");
-        btn.className = "fw-btn";
-        btn.textContent = fw;
-        btn.onclick = function() { triggerGoldHen(fw); };
-        grid.appendChild(btn);
-    });
-}
-
-// Обработчики кнопок языка
-document.querySelectorAll(".lang-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-        setLanguage(this.getAttribute("data-lang"));
-    });
-});
-
-// Запуск
-buildGrid();
-setLanguage("en");
 </script>
 </body>
 </html>
